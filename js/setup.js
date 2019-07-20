@@ -126,15 +126,20 @@ var closeUserDialog = function () {
   document.removeEventListener('keydown', onUserDialogEscPress);
 };
 
-var submitForm = function () {
-  form.submit();
-};
-
 var changeColor = function (item, colors) {
+  var color = getRandomValue(colors);
+
   if (item === wizardFireball) {
-    item.style.background = getRandomValue(colors);
+    item.style.background = color;
+    userDialog.querySelector('input[name=fireball-color]').value = color;
   } else {
-    item.style.fill = getRandomValue(colors);
+    item.style.fill = color;
+
+    if (item === wizardCoat) {
+      userDialog.querySelector('input[name=coat-color]').value = color;
+    } else {
+      userDialog.querySelector('input[name=eyes-color]').value = color;
+    }
   }
 };
 
@@ -142,8 +147,6 @@ var openButton = document.querySelector('.setup-open');
 var openIcon = document.querySelector('.setup-open-icon');
 var closeButton = userDialog.querySelector('.setup-close');
 var inputUserName = userDialog.querySelector('.setup-user-name');
-var submitButton = userDialog.querySelector('.setup-submit');
-var form = userDialog.querySelector('.setup-wizard-form');
 var wizardCoat = userDialog.querySelector('.wizard-coat');
 var wizardEyes = userDialog.querySelector('.wizard-eyes');
 var wizardFireball = document.querySelector('.setup-fireball-wrap');
@@ -168,17 +171,6 @@ closeButton.addEventListener('keydown', function (evt) {
     closeUserDialog();
   }
 });
-
-submitButton.addEventListener('click', function () {
-  submitForm();
-});
-
-// не работает
-// form.addEventListener('submit', function (evt) {
-//   if (!inputUserName.validity.valid) {
-//     evt.preventDefault();
-//   }
-// });
 
 wizardCoat.addEventListener('click', function () {
   changeColor(wizardCoat, COAT_COLORS);
