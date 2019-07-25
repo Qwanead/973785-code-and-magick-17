@@ -96,11 +96,8 @@ var createWizardList = function (characters) {
 };
 
 var userDialog = document.querySelector('.setup');
-
 var characters = createCharacters(4);
-
 var similarListElement = userDialog.querySelector('.setup-similar-list');
-
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
 similarListElement.appendChild(createWizardList(characters));
@@ -108,6 +105,8 @@ similarListElement.appendChild(createWizardList(characters));
 userDialog.querySelector('.setup-similar').classList.remove('hidden');
 
 // события
+
+var initialUserDialogCoords = {};
 
 var onUserDialogEscPress = function (evt) {
   if ((evt.keyCode === ESC_KEYCODE) && (document.activeElement !== inputUserName)) {
@@ -118,11 +117,21 @@ var onUserDialogEscPress = function (evt) {
 
 var openUserDialog = function () {
   userDialog.classList.remove('hidden');
+
+  initialUserDialogCoords = {
+    x: userDialog.offsetLeft,
+    y: userDialog.offsetTop
+  };
+
   document.addEventListener('keydown', onUserDialogEscPress);
 };
 
 var closeUserDialog = function () {
   userDialog.classList.add('hidden');
+
+  userDialog.style.left = initialUserDialogCoords.x + 'px';
+  userDialog.style.top = initialUserDialogCoords.y + 'px';
+
   document.removeEventListener('keydown', onUserDialogEscPress);
 };
 
@@ -149,7 +158,7 @@ var closeButton = userDialog.querySelector('.setup-close');
 var inputUserName = userDialog.querySelector('.setup-user-name');
 var wizardCoat = userDialog.querySelector('.wizard-coat');
 var wizardEyes = userDialog.querySelector('.wizard-eyes');
-var wizardFireball = document.querySelector('.setup-fireball-wrap');
+var wizardFireball = userDialog.querySelector('.setup-fireball-wrap');
 
 
 openButton.addEventListener('click', function () {
@@ -182,4 +191,90 @@ wizardEyes.addEventListener('click', function () {
 
 wizardFireball.addEventListener('click', function () {
   changeColor(wizardFireball, FIREBOLL_COLORS);
+});
+
+// перемещение UserDialog
+
+var dialogMoveIcon = userDialog.querySelector('.upload');
+
+dialogMoveIcon.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var dragged = false;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    userDialog.style.left = userDialog.offsetLeft - shift.x + 'px';
+    userDialog.style.top = userDialog.offsetTop - shift.y + 'px';
+
+    startCoords.x = moveEvt.clientX;
+    startCoords.y = moveEvt.clientY;
+  };
+
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    if (dragged) {
+      var onClickPreventDefault = function (clickEvt) {
+        clickEvt.preventDefault(clickEvt);
+        userDialog.removeEventListener('click', onClickPreventDefault);
+      };
+
+      userDialog.addEventListener('click', onClickPreventDefault);
+    }
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+// drag-n-drop
+
+var shopItem = document.querySelector('.setup-artifacts-shop');
+var draggedItem = null;
+
+shopItem.addEventListener('dragstart', function (evt) {
+  if (evt.target.tagName.toLowerCase() === 'img') {
+    draggedItem = evt.target;
+    evt.dataTransfer.setData('text/plain', evt.target.alt);
+  }
+});
+
+var artifact = document.querySelector('.setup-artifacts');
+
+artifact.addEventListener('dragover', function (evt) {
+  evt.preventDefault();
+  return false;
+});
+
+artifact.addEventListener('drop', function (evt) {
+  evt.target.style.backgroundColor = '';
+  evt.target.appendChild(draggedItem);
+});
+
+
+artifact.addEventListener('dragenter', function (evt) {
+  evt.target.style.backgroundColor = 'yellow';
+  evt.preventDefault();
+});
+
+artifact.addEventListener('dragleave', function (evt) {
+  evt.target.style.backgroundColor = '';
+  evt.preventDefault();
 });
