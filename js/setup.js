@@ -2,22 +2,22 @@
 
 (function () {
 
-  var COAT_COLORS = [
-    'rgb(101, 137, 164)',
-    'rgb(241, 43, 107)',
-    'rgb(146, 100, 161)',
-    'rgb(56, 159, 117)',
-    'rgb(215, 210, 55)',
-    'rgb(0, 0, 0)'
-  ];
+  // var COAT_COLORS = [
+  //   'rgb(101, 137, 164)',
+  //   'rgb(241, 43, 107)',
+  //   'rgb(146, 100, 161)',
+  //   'rgb(56, 159, 117)',
+  //   'rgb(215, 210, 55)',
+  //   'rgb(0, 0, 0)'
+  // ];
 
-  var EYES_COLORS = [
-    'black',
-    'red',
-    'blue',
-    'yellow',
-    'green'
-  ];
+  // var EYES_COLORS = [
+  //   'black',
+  //   'red',
+  //   'blue',
+  //   'yellow',
+  //   'green'
+  // ];
 
   var FIREBOLL_COLORS = [
     '#ee4830',
@@ -115,11 +115,11 @@
     } else {
       item.style.fill = color;
 
-      if (item === wizardCoat) {
-        userDialog.querySelector('input[name=coat-color]').value = color;
-      } else {
-        userDialog.querySelector('input[name=eyes-color]').value = color;
-      }
+      // if (item === wizardCoat) {
+      //   userDialog.querySelector('input[name=coat-color]').value = color;
+      // } else {
+      //   userDialog.querySelector('input[name=eyes-color]').value = color;
+      // }
     }
   };
 
@@ -127,8 +127,8 @@
   var openIcon = document.querySelector('.setup-open-icon');
   var closeButton = userDialog.querySelector('.setup-close');
   var inputUserName = userDialog.querySelector('.setup-user-name');
-  var wizardCoat = userDialog.querySelector('.wizard-coat');
-  var wizardEyes = userDialog.querySelector('.wizard-eyes');
+  // var wizardCoat = userDialog.querySelector('.wizard-coat');
+  // var wizardEyes = userDialog.querySelector('.wizard-eyes');
   var wizardFireball = userDialog.querySelector('.setup-fireball-wrap');
 
 
@@ -152,13 +152,13 @@
     }
   });
 
-  wizardCoat.addEventListener('click', function () {
-    changeColor(wizardCoat, COAT_COLORS);
-  });
+  // wizardCoat.addEventListener('click', function () {
+  //   changeColor(wizardCoat, COAT_COLORS);
+  // });
 
-  wizardEyes.addEventListener('click', function () {
-    changeColor(wizardEyes, EYES_COLORS);
-  });
+  // wizardEyes.addEventListener('click', function () {
+  //   changeColor(wizardEyes, EYES_COLORS);
+  // });
 
   wizardFireball.addEventListener('click', function () {
     changeColor(wizardFireball, FIREBOLL_COLORS);
@@ -256,10 +256,10 @@
     userDialog.classList.add('hidden');
   };
 
-  var onSuccessLoad = function (response) {
-    renderWizards(response);
-    userDialog.querySelector('.setup-similar').classList.remove('hidden');
-  };
+  // var onSuccessLoad = function (response) {
+  //   renderWizards(response);
+  // };
+  userDialog.querySelector('.setup-similar').classList.remove('hidden');
 
   var onError = function (errorMessage) {
     var errorAlert = document.createElement('div');
@@ -275,10 +275,14 @@
 
   var form = userDialog.querySelector('form');
 
-  window.backend.load(onSuccessLoad, onError);
+  // window.backend.load(onSuccessLoad, onError);
 
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(form), onSuccessSave, onError);
   });
+
+  window.setup = {
+    renderWizards: renderWizards
+  };
 })();
